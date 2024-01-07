@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": ">=8.0",
+        "ext-grpc": "*",
         "phpfastcache/phpfastcache": "^9.2",
         "google/cloud-firestore": "~1.39"
     },

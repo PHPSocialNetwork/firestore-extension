@@ -21,18 +21,35 @@ jobs:
 
     name: PHP ${{ matrix.php-versions }} quality/tests on ${{ matrix.operating-system }}
     env:
+      extensions: grpc
       key: cache-v1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup GCP credentials
+        run: ./tests/Scripts/setup_gcp.sh
+
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-
-      - name: Setup GCP credentials
-        run: ./tests/Scripts/setup_gcp.sh
+          extensions: ${{ env.extensions }}
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
