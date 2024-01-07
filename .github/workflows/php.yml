@@ -28,6 +28,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup GCP credentials
+        env:
+          BASE64_GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.BASE64_GOOGLE_APPLICATION_CREDENTIALS }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
         run: ./tests/Scripts/setup_gcp.sh
 
       - name: Setup cache environment
